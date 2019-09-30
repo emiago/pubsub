@@ -25,6 +25,15 @@ func NewSubscriber(id string) *Subscriber {
 	return &s
 }
 
+func (s *Subscriber) Copy() *Subscriber {
+	cp := NewSubscriber(s.Id)
+	for k, v := range s.Topics {
+		cp.Topics[k] = v
+	}
+
+	return cp
+}
+
 //Lets implement ISubscriber interface
 func (s *Subscriber) GetId() string {
 	return s.Id
@@ -52,6 +61,11 @@ func (s *Subscriber) Close() {
 func (s *Subscriber) AddTopic(top, topid string) {
 	t := FormatTopic(top, topid)
 	s.Topics[t]++
+}
+
+func (s *Subscriber) RemoveTopic(top, topid string) {
+	t := FormatTopic(top, topid)
+	delete(s.Topics, t)
 }
 
 func FormatTopic(top, topid string) string {

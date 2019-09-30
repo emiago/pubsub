@@ -1,6 +1,7 @@
 package pubsub
 
-type SubRemoveEvent struct {
+type SubUpdateEvent struct {
 	Event
-	SubId string
+	SubId    string
+	Callback func(sub ISubscriber)
 }

@@ -25,14 +25,14 @@ func ConnSimulate(b *testing.B, ch chan pubsub.Eventer, stopCh chan struct{}, wg
 	}
 }
 
-func createSubscriberToAll(id string) *example.Subscriber {
+func CreateSubscriberToAll(id string) *example.Subscriber {
 	sub := example.NewSubscriber(id)
 	sub.AddTopic("AGENTS", example.SUBSCRIBE_ALL_ID)
 	sub.AddTopic("CAMPAIGNS", example.SUBSCRIBE_ALL_ID)
 	return sub
 }
 
-func checkSubReceivingMessage(t *testing.T, sub *example.Subscriber, total int) int {
+func CheckSubReceivingMessage(t *testing.T, sub *example.Subscriber, total int) int {
 	count := 0
 	for count < total {
 		m, more := <-sub.Recv
@@ -61,7 +61,7 @@ func BenchmarkPool(b *testing.B) {
 	for i := 0; i < 3; i++ {
 		id := fmt.Sprintf("PEER%d", i)
 		// fmt.Println("Subscribing peer", id)
-		sub := createSubscriberToAll(id)
+		sub := CreateSubscriberToAll(id)
 		subpool.AddSubscriber(sub)
 		wg.Add(1)
 		go ConnSimulate(b, sub.Recv, stopConn, &wg)
@@ -84,7 +84,7 @@ func TestPoolGettingMessage(t *testing.T) {
 	go subpool.Run()
 
 	id := fmt.Sprintf("TESTER")
-	sub := createSubscriberToAll(id)
+	sub := CreateSubscriberToAll(id)
 	subpool.AddSubscriber(sub)
 
 	total := 10
@@ -97,7 +97,7 @@ func TestPoolGettingMessage(t *testing.T) {
 		}
 	}()
 
-	count := checkSubReceivingMessage(t, sub, total)
+	count := CheckSubReceivingMessage(t, sub, total)
 
 	if count != total {
 		t.Errorf("Did not receive all messages send=%d received=%d", total, count)
@@ -116,13 +116,13 @@ func TestPoolNSubscribersGettingMessage(t *testing.T) {
 	for i := 0; i < 3; i++ {
 		id := fmt.Sprintf("PEER%d", i)
 		// fmt.Println("Subscribing peer", id)
-		sub := createSubscriberToAll(id)
+		sub := CreateSubscriberToAll(id)
 		subpool.AddSubscriber(sub)
 
 		wg.Add(1)
 		go func(sub *example.Subscriber, wg *sync.WaitGroup) {
 			defer wg.Done()
-			count := checkSubReceivingMessage(t, sub, total)
+			count := CheckSubReceivingMessage(t, sub, total)
 			if count != total {
 				t.Errorf("%s Did not receive all messages send=%d received=%d", sub.GetId(), total, count)
 			}

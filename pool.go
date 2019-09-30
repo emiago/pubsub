@@ -24,10 +24,21 @@ func NewPool() *Pool {
 	return &s
 }
 
+//For external use
+func (r *Pool) Lock() {
+	r.mu.Lock()
+}
+
+//For external use
+func (r *Pool) Unlock() {
+	r.mu.Unlock()
+}
+
 func (r *Pool) SetLogger(l logrus.FieldLogger) {
 	r.log = l
 }
 
+// AddSubscriber - adds subscriber into pool, it can act as update also
 func (r *Pool) AddSubscriber(s ISubscriber) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
@@ -36,16 +47,21 @@ func (r *Pool) AddSubscriber(s ISubscriber) {
 	r.log.WithField("id", id).Info("Peer added in subpool")
 }
 
-func (r *Pool) RemoveSubscriber(id string) {
+func (r *Pool) RemoveSubscriber(id string) ISubscriber {
 	r.mu.Lock()
 	defer r.mu.Unlock()
+	sub, _ := r.subscribtions[id]
+	delete(r.subscribtions, id)
+	r.log.WithField("id", id).Info("Peer removed from subpool")
+	return sub
+}
+
+func (r *Pool) GetSubscriber(id string) (ISubscriber, bool) {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
 
 	sub, exists := r.subscribtions[id]
-	if exists {
-		sub.Close() //Stop receiving any more messages
-		delete(r.subscribtions, id)
-	}
-	r.log.WithField("id", id).Info("Peer removed from subpool")
+	return sub, exists
 }
 
 func (r *Pool) Publish(e Eventer) {
@@ -83,8 +99,9 @@ func (r *Pool) Run() {
 	for {
 		e := <-r.queue
 		switch m := e.(type) {
-		case *SubRemoveEvent:
-			r.RemoveSubscriber(m.SubId)
+		case *SubUpdateEvent:
+			s, _ := r.GetSubscriber(m.SubId)
+			m.Callback(s)
 		default:
 			r.Publish(e)
 		}
