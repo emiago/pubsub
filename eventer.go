@@ -4,11 +4,8 @@ import "time"
 
 type Eventer interface {
 	GetType() string
-	SetType(t string)
 	GetTopic() string
-	SetTopic(t string)
 	GetTopicId() string
-	SetTopicId(t string)
 	GetApplication() string
 	SetApplication(t string)
 }
@@ -37,8 +34,12 @@ func (p *Event) GetType() string {
 	return p.Type
 }
 
-func (p *Event) SetType(t string) {
-	p.Type = t
+func (p *Event) GetTopic() string {
+	return p.Topic
+}
+
+func (p *Event) GetTopicId() string {
+	return p.TopicId
 }
 
 func (p *Event) GetApplication() string {
@@ -47,20 +48,4 @@ func (p *Event) GetApplication() string {
 
 func (p *Event) SetApplication(t string) {
 	p.Application = t
-}
-
-func (p *Event) GetTopic() string {
-	return p.Topic
-}
-
-func (p *Event) SetTopic(t string) {
-	p.Topic = t
-}
-
-func (p *Event) GetTopicId() string {
-	return p.TopicId
-}
-
-func (p *Event) SetTopicId(t string) {
-	p.TopicId = t
 }
