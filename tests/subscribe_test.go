@@ -3,12 +3,11 @@ package pubsub_test
 import (
 	"fmt"
 	"pubsub"
-	"pubsub/example"
 	"sync"
 	"testing"
 )
 
-func SubReceiveMessage(t *testing.T, sub *example.Subscriber, total int) int {
+func SubReceiveMessage(t *testing.T, sub *Subscriber, total int) int {
 	count := 0
 	for count < total {
 		_, more := <-sub.Recv
@@ -24,18 +23,20 @@ func SubReceiveMessage(t *testing.T, sub *example.Subscriber, total int) int {
 func TestUpdateSubscriberByEvent(t *testing.T) {
 	subpool := pubsub.NewPool()
 	subpool.Fulldebug = true
+	// log.SetLevel(log.DebugLevel)
 	go subpool.Run()
 	var wg sync.WaitGroup
 	total := 10
 
 	id := fmt.Sprintf("PEER%d", 0)
-	sub := example.NewSubscriber(id)
-	sub.AddTopic("AGENTS", "1000")
-	sub.AddTopic("AGENTS", "1001")
-	subpool.AddSubscriber(sub)
+	sub := NewSubscriber(id)
+	subpool.AddSubscriber(sub,
+		"USERS:1000",
+		"USERS:1001",
+	)
 
 	wg.Add(1)
-	go func(sub *example.Subscriber) {
+	go func(sub *Subscriber) {
 		defer wg.Done()
 		count := SubReceiveMessage(t, sub, total)
 		if count != total {
@@ -44,10 +45,9 @@ func TestUpdateSubscriberByEvent(t *testing.T) {
 	}(sub)
 
 	//Lets fire some not subscribed events
-	Nuns := 3
-	for i := 0; i < Nuns; i++ {
+	for i := 0; i < 5; i++ {
 		//Lets just use pubsub default events
-		e := pubsub.NewEvent("AgentInfo", "AGENTS", "9999", "")
+		e := NewEvent("TopName", TOPIC1, "9999")
 		subpool.QueueIt(&e)
 	}
 
@@ -59,36 +59,30 @@ func TestUpdateSubscriberByEvent(t *testing.T) {
 				return
 			}
 
-			//Because we are queueing messages, no external updating, this should work, otherwise we need to lock our pool
-			// subpool.Lock()
-			// defer subpool.Unlock()
-			sub := subscriber.(*example.Subscriber)
-			sub.RemoveTopic("AGENTS", "1000")
-			sub.RemoveTopic("AGENTS", "1001")
-			sub.AddTopic("AGENTS", "1002")
+			// t.Log("Changing subscribtion")
+			sub := subscriber.(*Subscriber)
+			subpool.AddSubscriber(sub, "USERS:1002") //We need to add him again
+			// log.Println(subpool.Stats())
 		},
 	})
 
 	for i := 0; i < total+10; i++ {
 		//Lets just use pubsub default events
-		e := pubsub.NewEvent("AgentInfo", "AGENTS", "1002", "")
+		e := NewEvent("TopName", "USERS", "1002")
 		subpool.QueueIt(&e)
 	}
+
+	// log.Println(subpool.Stats())
 
 	wg.Wait()
 
 	//Currently subscriber should
-	subscriber, exists := subpool.GetSubscriber(id)
-	if !exists {
+
+	if _, exists := subpool.GetSubscriber(id); !exists {
 		t.Fatal("Subscriber does not exists", id)
 	}
 
-	sub = subscriber.(*example.Subscriber)
-	if len(sub.Topics) > 1 {
-		t.Fatal("Subscriber should have only 1 subscribtion")
-	}
-
-	if !sub.IsSubscribed("AGENTS", "1002") {
-		t.Fatalf("Subscriber has wrong subscribtion %v, expected=%s", sub.Topics, "1002")
+	if _, exists := subpool.GetSubscribersByTopic("USERS:1002"); !exists {
+		t.Fatal("Subscriber has wrong subscribtion")
 	}
 }

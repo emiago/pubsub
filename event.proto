@@ -1,0 +1,19 @@
+// Here is example for event protobuf.
+// It is used internaly and it is compatible with eventer. You should use your own, and add all neccesseary fields
+// PubSub just proxies message to right subscribers
+
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "io.grpc.examples.pubsub";
+option java_outer_classname = "PubSubProto";
+
+package pubsub;
+
+import "google/protobuf/any.proto";
+
+message Event {
+  string topic = 1;
+  string topicID = 2;
+  google.protobuf.Any data = 5;
+}
