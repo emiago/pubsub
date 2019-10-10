@@ -33,7 +33,7 @@ func TestPoolSubUnsub(t *testing.T) {
 		"TOPIC1:1000",
 	)
 
-	if _, exists := subpool.GetSubscribersByTopic("TOPIC1:1000"); exists {
+	if _, exists := subpool.GetSubscribersByTopic("TOPIC1:1001"); exists {
 		t.Error("Unsubscribe failed")
 	}
 
@@ -91,7 +91,7 @@ func TestPoolNSubscribersGettingMessage(t *testing.T) {
 			defer wg.Done()
 			count := CheckSubReceivingMessage(t, sub, total)
 			if count != total {
-				t.Errorf("%s Did not receive all messages send=%d received=%d", sub.GetId(), total, count)
+				t.Errorf("%s Did not receive all messages send=%d received=%d", sub.UID(), total, count)
 			}
 		}(sub, &wg)
 	}

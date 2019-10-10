@@ -40,7 +40,7 @@ func TestUpdateSubscriberByEvent(t *testing.T) {
 		defer wg.Done()
 		count := SubReceiveMessage(t, sub, total)
 		if count != total {
-			t.Errorf("%s Did not receive all messages send=%d received=%d", sub.GetId(), total, count)
+			t.Errorf("%s Did not receive all messages send=%d received=%d", sub.UID(), total, count)
 		}
 	}(sub)
 

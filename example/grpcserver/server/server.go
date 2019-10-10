@@ -37,6 +37,7 @@ func (s *server) GetEvents(req *pb.Subscribe, srv pb.Greeter_GetEventsServer) er
 	log.Println("User subscribed", req.App)
 
 	sub := NewSubscriber(req.App)
+	defer sub.Close()
 
 	// var topics []string
 	for _, t := range req.Agents {
@@ -134,17 +135,8 @@ func NewSubscriber(id string) *Subscriber {
 	return &s
 }
 
-func (s *Subscriber) Copy() *Subscriber {
-	cp := NewSubscriber(s.Id)
-	for k, v := range s.Topics {
-		cp.Topics[k] = v
-	}
-
-	return cp
-}
-
 //Lets implement ISubscriber interface
-func (s *Subscriber) GetId() string {
+func (s *Subscriber) UID() string {
 	return s.Id
 }
 

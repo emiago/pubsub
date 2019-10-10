@@ -47,7 +47,7 @@ func (r *Pool) addSub(sub ISubscriber, topics []string) {
 	}
 	s.topics = append(s.topics, topics...) //Copy topics
 
-	r.subscribtions[sub.GetId()] = s
+	r.subscribtions[sub.UID()] = s
 	for _, t := range s.topics {
 		r.topics[t] = append(r.topics[t], s)
 	}
@@ -87,7 +87,7 @@ func (r *Pool) unsubscribe(s *Subscriber, topics []string) {
 func (r *Pool) AddSubscriber(s ISubscriber, topics ...string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	id := s.GetId()
+	id := s.UID()
 	r.removeSub(id) //Remove existing subscribtion
 	r.addSub(s, topics)
 	r.log.WithField("id", id).Info("Subscriber added in subpool")
@@ -168,7 +168,7 @@ func (r *Pool) Publish(e Eventer) {
 func (r *Pool) subSend(sub ISubscriber, e Eventer) {
 	if r.Fulldebug {
 		r.log.WithFields(logrus.Fields{
-			"sub":     sub.GetId(),
+			"sub":     sub.UID(),
 			"topic":   e.GetTopic(),
 			"topicID": e.GetTopicID(),
 		}).Debug("Sub sending event ---->")

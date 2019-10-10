@@ -1,7 +1,7 @@
 package pubsub
 
 type ISubscriber interface {
-	GetId() string
+	UID() string
 	Send(e Eventer) error //This is called if peer is subscribed
 }
 
