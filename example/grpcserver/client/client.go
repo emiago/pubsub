@@ -25,7 +25,7 @@ import (
 	"os"
 	"time"
 
-	pb "pubsub/example/grpcserver/mymodels"
+	pb "github.com/emiraganov/pubsub/example/grpcserver/mymodels"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"

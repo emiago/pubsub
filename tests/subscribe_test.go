@@ -2,9 +2,10 @@ package pubsub_test
 
 import (
 	"fmt"
-	"pubsub"
 	"sync"
 	"testing"
+
+	"github.com/emiraganov/pubsub"
 )
 
 func SubReceiveMessage(t *testing.T, sub *Subscriber, total int) int {

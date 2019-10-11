@@ -1,4 +1,4 @@
-module pubsub
+module github.com/emiraganov/pubsub
 
 go 1.12
 

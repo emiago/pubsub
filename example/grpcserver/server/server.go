@@ -12,9 +12,9 @@ import (
 
 	// "log"
 	"net"
-	"pubsub"
+	"github.com/emiraganov/pubsub"
 
-	pb "pubsub/example/grpcserver/mymodels"
+	pb "github.com/emiraganov/pubsub/example/grpcserver/mymodels"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/golang/protobuf/ptypes"

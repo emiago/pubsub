@@ -3,9 +3,10 @@ package pubsub_test
 import (
 	"fmt"
 	"io/ioutil"
-	"pubsub"
 	"sync"
 	"testing"
+
+	"github.com/emiraganov/pubsub"
 
 	"github.com/sirupsen/logrus"
 )
