@@ -93,12 +93,11 @@ func (r *Pool) AddSubscriber(s ISubscriber, topics ...string) {
 	r.log.WithField("id", id).Info("Subscriber added in subpool")
 }
 
-func (r *Pool) RemoveSubscriber(id string) ISubscriber {
+func (r *Pool) RemoveSubscriber(id string) {
 	r.mu.Lock()
 	defer r.mu.Unlock()
-	s := r.removeSub(id)
+	r.removeSub(id)
 	r.log.WithField("id", id).Info("Subscriber removed from subpool")
-	return s.sub
 }
 
 func (r *Pool) GetSubscriber(id string) (ISubscriber, bool) {
