@@ -10,10 +10,7 @@ option java_outer_classname = "PubSubProto";
 
 package pubsub;
 
-import "google/protobuf/any.proto";
-
 message Event {
   string topic = 1;
-  string topicID = 2;
-  google.protobuf.Any data = 5;
+  string topic_id = 2;
 }

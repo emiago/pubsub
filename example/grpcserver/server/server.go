@@ -12,12 +12,12 @@ import (
 
 	// "log"
 	"net"
+
 	"github.com/emiraganov/pubsub"
 
 	pb "github.com/emiraganov/pubsub/example/grpcserver/mymodels"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 )
@@ -85,11 +85,11 @@ func (s *server) GetEvents(req *pb.Subscribe, srv pb.Greeter_GetEventsServer) er
 }
 
 func queueEvent(name, topic, topicID, app string, data proto.Message) {
-	serialized, _ := ptypes.MarshalAny(data)
+	serialized, _ := proto.Marshal(data)
 	subpool.QueueIt(&pb.Event{
 		Type:        name,
 		Topic:       topic,
-		TopicID:     topicID,
+		TopicId:     topicID,
 		Application: app,
 		Data:        serialized,
 	})

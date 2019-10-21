@@ -18,10 +18,10 @@ Subscriber and Eventer must be implemented.
 For topic handling it is split to have topic and topic ID. I find this useful for handling ALL subscribtion easier.
 Pool will check all subscribtions with:
 - topic
-- topic:topicID 
+- topic.topicId
     
 USE "Topic" as domain and topicID as subdomain. 
-When subscribing consider that you need format your topics **topic[:topicID]**
+When subscribing consider that you need format your topics **topic[.topicId]**
 TopicID is not neccessary to be used.
 
 ## Changing subscribtion by queueing event

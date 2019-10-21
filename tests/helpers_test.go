@@ -76,7 +76,7 @@ func FormatTopic(top, topid string) string {
 func NewEvent(name, topic, topicID string) pubsub.Event {
 	return pubsub.Event{
 		Topic:   topic,
-		TopicID: topicID,
+		TopicId: topicID,
 	}
 }
 
@@ -102,7 +102,7 @@ func CheckSubReceivingMessage(t *testing.T, sub *Subscriber, total int) int {
 			break
 		}
 		//Test order of messages
-		if m.GetTopicID() != fmt.Sprintf("%d", count) {
+		if m.GetTopicId() != fmt.Sprintf("%d", count) {
 			t.Fatalf("Order of messages not corrected")
 		}
 		count++
@@ -119,7 +119,7 @@ func CheckSubReceivingMessageCount(t *testing.T, sub *Subscriber, total int) int
 			break
 		}
 		//Test order of messages
-		if m.GetTopicID() != fmt.Sprintf("%d", count) {
+		if m.GetTopicId() != fmt.Sprintf("%d", count) {
 			t.Fatalf("Order of messages not corrected")
 		}
 		count++

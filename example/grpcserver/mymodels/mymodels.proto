@@ -20,9 +20,6 @@ option java_outer_classname = "MyModelsProto";
 
 package mymodels;
 
-import "google/protobuf/any.proto";
-
-
 // The greeting service definition.
 service Greeter {
   rpc GetEvents(Subscribe) returns (stream Event) {}
@@ -36,11 +33,11 @@ message Subscribe {
 }
 
 message Event {
-  string type = 1;
-  string topic = 2;
-  string topicID = 3;
-  string application = 4;
-  google.protobuf.Any data = 5;
+  string topic = 1;
+  string topic_id = 2;
+  string application = 3;
+  string type = 4;
+  bytes data = 5;
 }
 
 message TestEvent {

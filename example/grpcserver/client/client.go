@@ -28,7 +28,6 @@ import (
 	pb "github.com/emiraganov/pubsub/example/grpcserver/mymodels"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/golang/protobuf/ptypes"
 	"google.golang.org/grpc"
 )
 
@@ -71,13 +70,13 @@ func main() {
 
 		log.Println(e)
 
-		var data proto.Message = &pb.TestEvent{}
+		var raw proto.Message = &pb.TestEvent{}
 
 		// var data proto.Message = pb.TestEvent{}
-		if err := ptypes.UnmarshalAny(e.Data, data); err != nil {
+		if err := proto.Unmarshal(e.Data, raw); err != nil {
 			log.Println(err)
 		}
 
-		log.Println(data)
+		log.Println(raw)
 	}
 }

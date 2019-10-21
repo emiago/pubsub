@@ -147,7 +147,7 @@ func (r *Pool) Publish(e Eventer) {
 	if r.Fulldebug {
 		r.log.WithFields(logrus.Fields{
 			"topic":   e.GetTopic(),
-			"topicID": e.GetTopicID(),
+			"topicID": e.GetTopicId(),
 		}).Debug("Publishing event ---->")
 	}
 
@@ -158,7 +158,7 @@ func (r *Pool) Publish(e Eventer) {
 	}
 
 	//Brodcasting to all subscribers for current topic ID
-	topicID := fmt.Sprintf("%s:%s", e.GetTopic(), e.GetTopicID())
+	topicID := fmt.Sprintf("%s.%s", e.GetTopic(), e.GetTopicId())
 	for _, s := range r.topics[topicID] {
 		r.subSend(s.sub, e)
 	}
@@ -169,7 +169,7 @@ func (r *Pool) subSend(sub ISubscriber, e Eventer) {
 		r.log.WithFields(logrus.Fields{
 			"sub":     sub.UID(),
 			"topic":   e.GetTopic(),
-			"topicID": e.GetTopicID(),
+			"topicID": e.GetTopicId(),
 		}).Debug("Sub sending event ---->")
 	}
 
